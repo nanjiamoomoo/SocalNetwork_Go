@@ -5,8 +5,10 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
 
 	"socialnetwork_go/constants"
+
 	"cloud.google.com/go/storage"
 )
 
@@ -19,8 +21,10 @@ type GoogleCloudStorageBackend struct {
 	bucket string
 }
 
-//obtain a new client
+//obtain a new client for GCS
 func InitGCSBackend() {
+	//use cloud service account key to access to CGS 
+	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "C:/Users/ZW/Downloads/socialnetwork-357505-594450545c97.json")
     client, err := storage.NewClient(context.Background())
     if err != nil {
         panic(err)
