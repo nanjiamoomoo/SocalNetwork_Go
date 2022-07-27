@@ -11,5 +11,6 @@ func InitRouter() *mux.Router {
 	router := mux.NewRouter()
 	//Automatically maps the request URL to HTTP handler
 	router.Handle("/upload", http.HandlerFunc(uploadHandler)).Methods("POST")
+	router.Handle("/search", http.HandlerFunc(searchHandler)).Methods("GET")
 	return router
 }

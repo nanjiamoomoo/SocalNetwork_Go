@@ -23,7 +23,7 @@ type ElasticsearchBackend struct {
 func InitElasticsearchBackend() {
 	//obtain a new client
 	client, err := elastic.NewClient(elastic.SetURL(constants.ES_URL),
-		elastic.SetBasicAuth(constants.ES_USERNAME, constants.ES_PASSWORD))
+		elastic.SetBasicAuth(constants.ES_USERNAME, constants.ES_PASSWORD), elastic.SetSniff(false))
 
 	if err != nil {
 		panic(err)
@@ -37,31 +37,20 @@ func InitElasticsearchBackend() {
 
 	//create post index if it does not exist
 	if !exists {		
-		mapping := `
-		{
-			"mappings":{
-				"properties":{
-					"id":{
-						"type":"keyword"
-					},
-					"user":{
-						"type":"keyword"
-					},
-					"message":{
-						"type":"text"
-					},
-					"url":{
-						"type":"keyword",
-						"index": false
-					},
-					"type":{
-						"type":"keyword".
-						"index": false
-					}		
-				}	
-			}
-		}
-		`
+		//for message:{"type":"text"} ES will be analized before storing into Inverted Index
+		//this provides a quick keyword-based search
+		mapping := `{
+            "mappings": {
+                "properties": {
+                    "id":       { "type": "keyword" },
+                    "user":     { "type": "keyword" },
+                    "message":  { "type": "text" },
+                    "url":      { "type": "keyword", "index": false },
+                    "type":     { "type": "keyword", "index": false }
+                }
+            }
+        }`
+		
 		_, err := client.CreateIndex(constants.POST_INDEX).Body(mapping).Do(context.Background())
 
 		if err != nil {
@@ -77,28 +66,17 @@ func InitElasticsearchBackend() {
 
 	//create user index if it does not exist
 	if !exists {
-        mapping := `
-		{
+		mapping := `{
 			"mappings": {
-				"properties":{
-					"username":{
-						"type":"keyword"
-					},
-					"password":{
-						"type":"keyword"
-					},
-					"age":{
-						"type":"long", 
-						"index":false
-					},
-					"gender":{
-						"type":"text", 
-						"index":false
-					}
+				"properties": {
+					"username": {"type": "keyword"},
+					"password": {"type": "keyword"},
+					"age":      {"type": "long", "index": false},
+					"gender":   {"type": "keyword", "index": false}
 				}
 			}
-        }
-		`
+		}`
+		
         _, err = client.CreateIndex(constants.USER_INDEX).Body(mapping).Do(context.Background())
         if err != nil {
             panic(err)
@@ -108,4 +86,17 @@ func InitElasticsearchBackend() {
 
 	//ESbackend can be used to obtain the client object to access the ElasticSearch
 	ESBackend = &ElasticsearchBackend{client: client}
+}
+
+func (backend *ElasticsearchBackend) ReadFromES(query elastic.Query, index string) (*elastic.SearchResult, error) {
+	searchResult, err := backend.client.Search().
+		Index(index). //specify the Index to search
+		Query(query). //specify the query
+		Pretty(true). //pretty print the formatted reponse JSON
+		Do(context.Background())
+	
+	if err != nil {
+		return nil, err
+	}
+	return searchResult, nil
 }
