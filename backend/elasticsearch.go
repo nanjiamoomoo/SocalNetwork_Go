@@ -17,9 +17,10 @@ type ElasticsearchBackend struct {
 	client *elastic.Client
 }
 
-//initialize the Elastic connection and create indexes
 //reference https://github.com/olivere/elastic/blob/release-branch.v7/example_test.go to see 
 //example of how to create an index in ElasticSearch
+
+//obtain a client and create indexes
 func InitElasticsearchBackend() {
 	//obtain a new client
 	client, err := elastic.NewClient(elastic.SetURL(constants.ES_URL),
@@ -84,16 +85,16 @@ func InitElasticsearchBackend() {
     }
     fmt.Println("Indexes are created.")
 
-	//ESbackend can be used to obtain the client object to access the ElasticSearch
+	//ESbackend can be used to obtain the client object to do operations on the ElasticSearch
 	ESBackend = &ElasticsearchBackend{client: client}
 }
 
 func (backend *ElasticsearchBackend) ReadFromES(query elastic.Query, index string) (*elastic.SearchResult, error) {
 	searchResult, err := backend.client.Search().
-		Index(index). //specify the Index to search
-		Query(query). //specify the query
+		Index(index). //specify the index to use for search
+		Query(query). //sets the query to perform
 		Pretty(true). //pretty print the formatted reponse JSON
-		Do(context.Background())
+		Do(context.Background()) //executes the search and returns a SearchResult.
 	
 	if err != nil {
 		return nil, err

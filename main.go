@@ -12,8 +12,10 @@ import (
 func main() {
 	fmt.Println("started service!")
 
-	//inite client object and create indexes
+	//init client object for ElasticSearch and create indexes
 	backend.InitElasticsearchBackend()
+	//init client object for GCS
+	backend.InitGCSBackend()
 
 	log.Fatal(http.ListenAndServe(":8080", handler.InitRouter()))
 }
