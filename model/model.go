@@ -1,5 +1,6 @@
 package model
 
+//this the model object
 type Post struct {
 	Id      string `json:"id"`
 	User    string `json:"user"`
