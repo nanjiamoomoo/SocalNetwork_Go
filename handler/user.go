@@ -13,8 +13,6 @@ import (
 	"github.com/form3tech-oss/jwt-go"
 )
 
-var mySigningKey = []byte("secret")
-
 /*
 1. A user enters their login credentials (=username + password).
 2. The server verifies the credentials are correct and created an encrypted and signed token with a private key ( { username: “abcd”, exp: “2021/1/1/10:00” }, private key => token).

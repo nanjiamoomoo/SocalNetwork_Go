@@ -1,0 +1,10 @@
+elasticsearch:
+  address: "http://34.125.64.58:9200"
+  username: "zackary"
+  password: "ES@2022"
+
+gcs:
+  bucket: "zackary-bucket"
+
+token:
+  secret: "secret"

@@ -5,6 +5,7 @@ import (
     "fmt"
 
     "socialnetwork_go/constants"
+	"socialnetwork_go/util"
 
     "github.com/olivere/elastic/v7"
 )
@@ -21,10 +22,10 @@ type ElasticsearchBackend struct {
 //example of how to create an index in ElasticSearch
 
 //obtain a client and create indexes
-func InitElasticsearchBackend() {
+func InitElasticsearchBackend(config *util.ElasticsearchInfo) {
 	//obtain a new client
-	client, err := elastic.NewClient(elastic.SetURL(constants.ES_URL),
-		elastic.SetBasicAuth(constants.ES_USERNAME, constants.ES_PASSWORD), elastic.SetSniff(false))
+	client, err := elastic.NewClient(elastic.SetURL(config.Address),
+		elastic.SetBasicAuth(config.Username, config.Password), elastic.SetSniff(false))
 
 	if err != nil {
 		panic(err)
