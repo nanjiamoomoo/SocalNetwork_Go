@@ -5,6 +5,7 @@ import (
     "fmt"
 
     "socialnetwork_go/constants"
+	"socialnetwork_go/util"
 
     "github.com/olivere/elastic/v7"
 )
@@ -21,10 +22,10 @@ type ElasticsearchBackend struct {
 //example of how to create an index in ElasticSearch
 
 //obtain a client and create indexes
-func InitElasticsearchBackend() {
+func InitElasticsearchBackend(config *util.ElasticsearchInfo) {
 	//obtain a new client
-	client, err := elastic.NewClient(elastic.SetURL(constants.ES_URL),
-		elastic.SetBasicAuth(constants.ES_USERNAME, constants.ES_PASSWORD), elastic.SetSniff(false))
+	client, err := elastic.NewClient(elastic.SetURL(config.Address),
+		elastic.SetBasicAuth(config.Username, config.Password), elastic.SetSniff(false))
 
 	if err != nil {
 		panic(err)
@@ -108,5 +109,16 @@ func (backend *ElasticsearchBackend) SaveToES(i interface{}, index string, id st
         Id(id). //document ID
         BodyJson(i). 
         Do(context.Background())
+    return err
+}
+
+
+func (backend *ElasticsearchBackend) DeleteFromES(query elastic.Query, index string) error {
+    _, err := backend.client.DeleteByQuery().
+        Index(index).
+        Query(query).
+        Pretty(true).
+        Do(context.Background())
+
     return err
 }

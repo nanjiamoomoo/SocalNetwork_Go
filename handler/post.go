@@ -9,7 +9,10 @@ import (
 	"socialnetwork_go/model"
 	"socialnetwork_go/service"
 
+	"github.com/form3tech-oss/jwt-go"
 	"github.com/pborman/uuid"
+
+	"github.com/gorilla/mux" 
 )
 
 
@@ -31,9 +34,15 @@ var (
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received one upload request")
 
+	//context() returns the request context
+	user := r.Context().Value("user")
+	fmt.Println(user)
+	claims := user.(*jwt.Token).Claims //claims get the second segment of the token
+	username := claims.(jwt.MapClaims)["username"]
+
 	p := model.Post {
 		Id: uuid.New(),
-		User: r.FormValue("user"),
+		User: username.(string),
 		Message: r.FormValue("message"),
 	}
 
@@ -95,4 +104,20 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
         return
 	}
 	w.Write(js)
+}
+
+func deleteHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Println("Received one request for delete")
+
+    user := r.Context().Value("user")
+    claims := user.(*jwt.Token).Claims
+    username := claims.(jwt.MapClaims)["username"].(string)
+    id := mux.Vars(r)["id"] //get current post id
+
+    if err := service.DeletePost(id, username); err != nil {
+        http.Error(w, "Failed to delete post from backend", http.StatusInternalServerError)
+        fmt.Printf("Failed to delete post from backend %v\n", err)
+        return
+    }
+    fmt.Println("Post is deleted successfully")
 }
