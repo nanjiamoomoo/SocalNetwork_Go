@@ -112,7 +112,7 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
     user := r.Context().Value("user")
     claims := user.(*jwt.Token).Claims
     username := claims.(jwt.MapClaims)["username"].(string)
-    id := mux.Vars(r)["id"] //get current user id
+    id := mux.Vars(r)["id"] //get current post id
 
     if err := service.DeletePost(id, username); err != nil {
         http.Error(w, "Failed to delete post from backend", http.StatusInternalServerError)
