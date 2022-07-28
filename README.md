@@ -21,9 +21,9 @@ Contains all the service logic and mediates communications between handler and b
 **_`backend`_** 
 Communicates with ElasticSearch and GCS. All the CRUD methods are defined here to operate and return data in the database and GCS. 
 
-**_`util, conf packages`_** Configuration package. Defined the configuration constants to be used and load the configuration when the server starts. 
+**_`util, conf packages`_** Defines the configuration constants to be used and load the configuration when the server starts. 
 
-**_`constants packages`_** Defined the name of the indices(databases) in ElasticSearch.
+**_`constants packages`_** Defines the name of the indices(databases) in ElasticSearch.
 
 ## **ElasticSearch and GCS**
 **ElasticSearch** is used to store data posted by users. There are two indices created, "user" and "post".
@@ -44,21 +44,21 @@ The project used JSON Web Token for server authentication. Token based authentic
 
 ## **Test**
 Download Postman to test all APIs. 
-_`/signup`_ Create signup request by using Http POST Metthod. Send POST request with JSON format data in the request body to (http://Server_IP_ADDRESS:8080/signup).
+**_`/signup`_** Create signup request by using Http POST Metthod. Send POST request with JSON format data in the request body to (http://Server_IP_ADDRESS:8080/signup).
  {
   "username": "admin",
   "password": "admin",
   "age": "30,
   "gender": "male"
   }
-_`/signin`_ Create signin request by using Http POST Metthod. Send POST request with JSON format data in the request body to (http://Server_IP_ADDRESS:8080/signin). A token string should be returned in response message.
+**_`/signin`_** Create signin request by using Http POST Metthod. Send POST request with JSON format data in the request body to (http://Server_IP_ADDRESS:8080/signin). A token string should be returned in response message.
  {
 	"username":"admin",
 	"password":"admin"
 }
-_`/upload`_ Create upload request by using POST method and put http://Server_IP_ADDRESS:8080/upload in the address bar. In the Body section, choose form-data from the top and then add user, message, and media_file. For media_file, the type is “file” so that you may upload an image/video from your local disk. Under the Authorization tab, add a Bearer Token with the token string returned from signin.
+**_`/upload`_** Create upload request by using POST method and put http://Server_IP_ADDRESS:8080/upload in the address bar. In the Body section, choose form-data from the top and then add user, message, and media_file. For media_file, the type is “file” so that you may upload an image/video from your local disk. Under the Authorization tab, add a Bearer Token with the token string returned from signin.
  
-_`/search`_  Create search request by using GET method, and put http://Server_IP_ADDRESS:8080/search?user=xxx in the address bar. Under the Authorization tab, add a Bearer Token with the token string returned from signin.
+**_`/search`_**  Create search request by using GET method, and put http://Server_IP_ADDRESS:8080/search?user=xxx in the address bar. Under the Authorization tab, add a Bearer Token with the token string returned from signin.
 
-_`/post/{id}`_ Create delete request by using DELETE method, and put http://Server_IP_ADDRESS:8080/post/put_postid_here in the address bar. Under the Authorization tab, add a Bearer Token with the token string returned from signin.
+**_`/post/{id}`_** Create delete request by using DELETE method, and put http://Server_IP_ADDRESS:8080/post/put_postid_here in the address bar. Under the Authorization tab, add a Bearer Token with the token string returned from signin.
 
