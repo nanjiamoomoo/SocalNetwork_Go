@@ -21,9 +21,9 @@ Contains all the service logic and mediates communications between handler and b
 **_`backend`_** 
 Communicates with ElasticSearch and GCS. All the CRUD methods are defined here to operate and return data in the database and GCS. 
 
-**_`util, conf packages`_** Defines the configuration constants to be used and load the configuration when the server starts. 
+**_`util, conf`_** Defines the configuration constants to be used and load the configuration when the server starts. 
 
-**_`constants packages`_** Defines the name of the indices(databases) in ElasticSearch.
+**_`constants`_** Defines the name of the indices(databases) in ElasticSearch.
 
 ## **ElasticSearch and GCS**
 **ElasticSearch** is used to store data posted by users. There are two indices created, "user" and "post".
