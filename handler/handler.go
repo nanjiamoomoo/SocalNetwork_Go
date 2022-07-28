@@ -18,13 +18,15 @@ func InitRouter() *mux.Router {
 		ValidationKeyGetter: func(t *jwt.Token) (interface{}, error) {
 			return []byte(mySigningKey), nil
 		},
-		SigningMethod: jwt.SigningMethodES256,
+		SigningMethod: jwt.SigningMethodHS256,
 	})
 
 	router := mux.NewRouter()
 	//Automatically maps the request URL to HTTP handler
 	router.Handle("/upload", jwtMiddleware.Handler(http.HandlerFunc(uploadHandler))).Methods("POST") //protect upload with JWT
 	router.Handle("/search", jwtMiddleware.Handler(http.HandlerFunc(searchHandler))).Methods("GET") //protect upload with JWT
+	router.Handle("/post/{id}", jwtMiddleware.Handler(http.HandlerFunc(deleteHandler))).Methods("DELETE") //protect delete with JWT
+	
 	router.Handle("/signup", http.HandlerFunc(signupHandler)).Methods("POST")
     router.Handle("/signin", http.HandlerFunc(signinHandler)).Methods("POST")
 	return router
