@@ -9,6 +9,7 @@ import (
 	"socialnetwork_go/model"
 	"socialnetwork_go/service"
 
+	"github.com/form3tech-oss/jwt-go"
 	"github.com/pborman/uuid"
 )
 
@@ -31,9 +32,15 @@ var (
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received one upload request")
 
+	//context() returns the request context
+	user := r.Context().Value("user")
+	fmt.Println(user)
+	claims := user.(*jwt.Token).Claims //claims get the second segment of the token
+	username := claims.(jwt.MapClaims)["username"]
+
 	p := model.Post {
 		Id: uuid.New(),
-		User: r.FormValue("user"),
+		User: username.(string),
 		Message: r.FormValue("message"),
 	}
 
