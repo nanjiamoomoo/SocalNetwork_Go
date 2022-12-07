@@ -1,7 +1,7 @@
 elasticsearch:
-  address: "http://34.125.64.58:9200"
+  address: "http://34.125.234.95:9200"
   username: "zackary"
-  password: "xxx"
+  password: "ES@2022"
 
 gcs:
   bucket: "zackary-bucket"

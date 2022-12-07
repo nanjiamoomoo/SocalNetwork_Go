@@ -26,10 +26,52 @@ Communicates with ElasticSearch and GCS. All the CRUD methods are defined here t
 **_`constants packages`_** Defines the name of the indices(databases) in ElasticSearch.
 
 ## **ElasticSearch and GCS**
-**ElasticSearch** is used to store data posted by users. There are two indices created, "user" and "post".
+### **ElasticSearch** 
+ElasticSearch is used to store data posted by users. There are two indices created, "user" and "post".
 
-**GCS** is used to store all media files posted by users. 
+**`How to install ElasticSearch on the GCE instance`**
 
+First Create VM
+
+Install java to your VM
+* sudo apt install default-jre
+
+verify java version 
+* java -version
+
+Install Elasticsearch on the GCE
+* sudo apt install apt-transport-https
+* wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+* sudo sh -c 'echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" > /etc/apt/sources.list.d/elastic-7.x.list'
+* sudo apt update
+* sudo apt install elasticsearch
+
+After installation, use the following command to open the configuration file
+* sudo vim /etc/elasticsearch/elasticsearch.yml
+
+change the following configs
+* network.host: 0.0.0.0(line 56)
+* http.port: 9200(line60)
+
+add following line
+* discovery.type: single-node(line 69)
+
+enable security feature of the Elasticsearch
+* xpack.security.enabled: true
+
+set up Elasticsearch auto-start everytime start GCE instance
+* sudo systemctl enable elasticsearch
+
+Use the following command to start Elasticsearch
+* sudo systemctl start elasticsearch
+
+Use the following command to add new user for you.
+* sudo /usr/share/elasticsearch/bin/elasticsearch-users useradd YOUR_NEW_USER_NAME -p YOUR_NEW_USER_PASSWORD -r superuser
+
+### **GCS** 
+GCS is used to store all media files posted by users. 
+
+### **API Explanations** 
 **_upload:_** When a post is uploaded, backend will generate a unique id and store the media file with the id to GCS. GCS will return the url info. Based on the id, user info, message input, url, and mediafile type, backend will wrap them up and store it as document in the post index.
 
 **_search:_** When doing search, if the search is based on user, backend will search in post index and return all documents that matches the exact user; if the search is based on keywords, backend will return all documents that contain the keywords.
